@@ -1,0 +1,132 @@
+#!/bin/sh
+#
+# $NetBSD: pgsql.sh,v 1.1 2021/10/08 10:23:44 adam Exp $
+#
+# PostgreSQL database rc.d control script
+#
+# PROVIDE: pgsql
+# REQUIRE: DAEMON
+# KEYWORD: shutdown
+#
+# You will need to set some variables in /etc/rc.conf to start PostgreSQL:
+#
+# pgsql=YES
+#
+# Optionally, "pgsql_flags" contains options for the PostgreSQL postmaster, e.g.
+#	pgsql_flags="-i"		# allows TCP/IP connections
+#	pgsql_flags="-i -l"		# enables SSL connections
+#	pgsql_home="/path/to/home"	# path to pgsql database directory
+# See postmaster(1) for possible options.
+
+if [ -f /etc/rc.subr ]; then
+	. /etc/rc.subr
+fi
+
+name="pgsql"
+rcvar=${name}
+command="/usr/pkg/bin/pg_ctl"
+procname="/usr/pkg/bin/postgres"
+: ${pgsql_user:=pgsql}
+: ${pgsql_group:=pgsql}
+: ${pgsql_home:=/usr/pkg/pgsql}
+
+extra_commands="initdb reload"
+initdb_cmd="pgsql_initdb"
+start_precmd="pgsql_precmd"
+start_cmd="pgsql_start"
+restart_precmd="pgsql_precmd"
+restart_cmd="pgsql_restart"
+stop_cmd="pgsql_stop"
+reload_cmd="pgsql_reload"
+
+if [ -f /etc/rc.subr -a -d /etc/rc.d -a -f /etc/rc.d/DAEMON ]; then
+	load_rc_config $name
+elif [ -f /etc/rc.conf ]; then
+	. /etc/rc.conf
+fi
+
+cd /
+
+command_args="-w -s -D ${pgsql_home}/data -m fast -l ${pgsql_home}/errlog"
+if [ -n "${pgsql_flags}" ]; then
+	command_args="${command_args} -o \\\"${pgsql_flags}\\\""
+fi
+
+pgsql_precmd()
+{
+	ulimit -n 4096
+	if [ ! -d ${pgsql_home}/data/base ]; then
+		pgsql_initdb
+	fi
+}
+
+pgsql_initdb()
+{
+	if [ -d ${pgsql_home}/data/base ]; then
+		echo "The PostgreSQL template databases have already been initialized."
+		echo "Skipping database initialization."
+	else
+		echo "Initializing PostgreSQL databases."
+		/bin/mkdir -p -p ${pgsql_home}
+		/usr/sbin/chown ${pgsql_user} ${pgsql_home}
+		/usr/bin/chgrp ${pgsql_group} ${pgsql_home}
+		/bin/chmod 0700 ${pgsql_home}
+		doit="/usr/bin/su -m ${pgsql_user} -c '${command} init ${command_args}'"
+		eval $doit
+	fi
+}
+
+pgsql_start()
+{
+	echo "Starting ${name}."
+	doit="/usr/bin/su -m ${pgsql_user} -c '${command} start ${command_args}'"
+	eval $doit
+}
+
+pgsql_restart()
+{
+	echo "Restarting ${name}."
+	doit="/usr/bin/su -m ${pgsql_user} -c '${command} restart ${command_args}'"
+	eval $doit
+}
+
+pgsql_stop()
+{
+	echo "Stopping ${name}."
+	doit="/usr/bin/su -m ${pgsql_user} -c '${command} stop ${command_args}'"
+	eval $doit
+}
+
+pgsql_reload()
+{
+	echo "Reloading ${name}."
+	doit="/usr/bin/su -m ${pgsql_user} -c '${command} reload ${command_args}'"
+	eval $doit
+}
+
+if [ -f /etc/rc.subr -a -d /etc/rc.d -a -f /etc/rc.d/DAEMON ]; then
+	run_rc_command "$1"
+else
+	pidfile="${pgsql_home}/data/postmaster.pid"
+	case "$1" in
+	initdb)
+		eval ${initdb_cmd}
+		;;
+	restart)
+		eval ${restart_precmd}
+		eval ${restart_cmd}
+		;;
+	stop)
+		if [ -r "${pidfile}" ]; then
+			eval ${stop_cmd}
+		fi
+		;;
+	reload)
+		eval ${reload_cmd}
+		;;
+	*)
+		eval ${start_precmd}
+		eval ${start_cmd}
+		;;
+	esac
+fi
