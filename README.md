@@ -8,4 +8,4 @@ I am tired of opening rc.conf with vi in order to add a service, or a flag. I do
 I need a single application that does it for me, something similar to sysrc used by FreeBSD and it’s derivatives. Basically netsysrc will take an argument from the command line and insert or append it to the rc.conf file. 
 
   #### Example:
-  ```netsysrc.py dbus=YES```
+  ```netsysrc dbus=YES```
