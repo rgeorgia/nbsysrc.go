@@ -23,8 +23,5 @@ func main() {
 }
 
 func is_user_root() bool {
-	if os.Geteuid() == 0 {
-		return true
-	}
-	return false
+	return os.Getuid() == 0
 }
