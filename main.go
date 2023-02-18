@@ -1,7 +1,9 @@
+// main package. this script is like sysrc for Freebsd
 package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/alexflint/go-arg"
@@ -19,10 +21,18 @@ var args struct {
 
 func main() {
 	arg.MustParse(&args)
+	if args.Service == nil {
+		log.Fatal("You must enter a service")
+	}
 	fmt.Println("Input:", args.Service)
 	fmt.Printf("Local Etc: %s\n", args.LocalEtc)
 	fmt.Printf("Local Example: %s\n", args.LocalExample)
-	fmt.Printf("Is user root? %v", isUserRoot())
+	fmt.Printf("Is user root? %v\n", isUserRoot())
+	rcContent, err := ReadFile(args.LocalEtc + DefaultRcConfFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(rcContent)
 }
 
 func isUserRoot() bool {
