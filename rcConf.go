@@ -1,6 +1,11 @@
 // rcConf.go - structs and methods for rc.conf file
 package main
 
+import (
+	"bufio"
+	"os"
+)
+
 const (
 	DefaultEtcPath    = "/etc/"
 	DefaultRcConfFile = "rc.conf"
@@ -10,29 +15,19 @@ const (
 
 // ReadFile reads a file and returns the content.
 // In this case the file name should be /etc/rc.conf
-// Read the rc.conf file. if the line starts with # ignore it
-// If the line contains an =, split it and stick it in a map
-// rc.conf has the following format
-/*
-# If this is not set to YES, the system will drop into single-user mode.
-#
-rc_configured=YES
+func ReadFile(filename string) ([]string, error) {
+	var fileLines []string
 
-# Add local overrides below.
-#
-dhcpcd=YES
-dhcpcd_flags="-qM bge0"
-sshd=YES
-ntpd=YES
-lvm=YES
-wscons=YES
-dbus=YES
-avahidaemon=YES
-rpcbind=YES
-famd=YES
-hal=YES
-zfs=YES
-*/
-func ReadFile(filename string) (string, error) {
-	return filename, nil
+	rcFileContent, err := os.Open(filename)
+	if err != nil {
+		return fileLines, err
+	}
+	defer rcFileContent.Close()
+	fileScanner := bufio.NewScanner(rcFileContent)
+	fileScanner.Split(bufio.ScanLines)
+
+	for fileScanner.Scan() {
+		fileLines = append(fileLines, fileScanner.Text())
+	}
+	return fileLines, nil
 }

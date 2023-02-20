@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/alexflint/go-arg"
 )
@@ -24,15 +25,23 @@ func main() {
 	if args.Service == nil {
 		log.Fatal("You must enter a service")
 	}
-	fmt.Println("Input:", args.Service)
-	fmt.Printf("Local Etc: %s\n", args.LocalEtc)
-	fmt.Printf("Local Example: %s\n", args.LocalExample)
-	fmt.Printf("Is user root? %v\n", isUserRoot())
+
 	rcContent, err := ReadFile(args.LocalEtc + DefaultRcConfFile)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(rcContent)
+
+	var rcMap = make(map[string]string)
+
+	for _, line := range rcContent {
+		if !strings.HasPrefix(line, "#") && len(line) > 0 && strings.Contains(line, "=") {
+			rcParts := strings.Split(line, "=")
+			rcMap[rcParts[0]] = rcParts[1]
+		}
+	}
+
+	fmt.Println("slim is here ", rcMap["slim"])
+	fmt.Printf("Key value [%v]\n", args.Service)
 }
 
 func isUserRoot() bool {
