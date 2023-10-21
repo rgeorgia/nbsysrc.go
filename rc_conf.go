@@ -36,3 +36,8 @@ func ReadRcConfigFile(filename string) ([]string, error) {
 }
 
 func WriteRcConfFile() {}
+
+// Consider moving the following to its own package
+
+func RcdDirectoryListing()    {}
+func EtcRcdDirectoryListing() {}
