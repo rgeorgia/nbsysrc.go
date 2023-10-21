@@ -12,8 +12,8 @@ import (
 
 var args struct {
 	Service      map[string]string `arg:"positional, required" help:"What you want to add to rc.conf i.e. samba=YES"`
-	LocalEtc     string            `arg:"-e" default:"/etc/" help:"Root path to alternate etc dir. Used for local testing`
-	LocalExample string            `arg:"-x" default:"/usr/pkg/share/example/" help:"Root path to alternate etc dir. Used for local testing`
+	LocalEtc     string            `arg:"-e" default:"/etc/" help:"Root path to alternate etc dir. Used for local testing"`
+	LocalExample string            `arg:"-x" default:"/usr/pkg/share/example/" help:"Root path to alternate etc dir. Used for local testing"`
 	Verbose      bool              `arg:"-v,--verbose" help:"verbosity level"`
 }
 
@@ -23,7 +23,7 @@ func main() {
 		log.Fatal("You must enter a service")
 	}
 
-	rcContent, err := ReadFile(args.LocalEtc + DefaultRcConfFile)
+	rcContent, err := ReadRcConfigFile(args.LocalEtc + DefaultRcConfFile)
 	if err != nil {
 		log.Fatal(err)
 	}
