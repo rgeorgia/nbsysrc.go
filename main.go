@@ -11,13 +11,10 @@ import (
 )
 
 var args struct {
-	Service map[string]string `arg:"positional, required" 
-	                                help:"What you want to add to rc.conf i.e. samba=YES"`
-	LocalEtc string `arg:"-e" default:"/etc/" help:"Root path to alternate
-	                                etc dir. Used for local testing`
-	LocalExample string `arg:"-x" default:"/usr/pkg/share/example/" help:"Root 
-	                                path to alternate etc dir. Used for local testing`
-	Verbose bool `arg:"-v,--verbose" help:"verbosity level"`
+	Service      map[string]string `arg:"positional, required" help:"What you want to add to rc.conf i.e. samba=YES"`
+	LocalEtc     string            `arg:"-e" default:"/etc/" help:"Root path to alternate etc dir. Used for local testing`
+	LocalExample string            `arg:"-x" default:"/usr/pkg/share/example/" help:"Root path to alternate etc dir. Used for local testing`
+	Verbose      bool              `arg:"-v,--verbose" help:"verbosity level"`
 }
 
 func main() {
