@@ -1,0 +1,3 @@
+ect_rcd = "/home/rgeorgia/workspace/rust_projects/nbsysrc/src/data/etc"
+example_rcd = "/home/rgeorgia/workspace/rust_projects/nbsysrc/src/data/usr/pkg/share/examples/rc.d"
+rc_conf = ""
