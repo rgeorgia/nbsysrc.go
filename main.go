@@ -3,6 +3,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/BurntSushi/toml"
 	"github.com/alexflint/go-arg"
 	"log"
 	"os"
@@ -12,13 +13,25 @@ var args struct {
 	Service map[string]string `arg:"positional, required" help:"What you want to add to rc.conf i.e. samba=YES"`
 }
 
+type NbSysRcMeta struct {
+	EctRcd     string `toml:"ect_rcd"`
+	ExampleRcd string `toml:"example_rcd"`
+	RcConf     string `toml:"rc_conf"`
+}
+
 func main() {
 	arg.MustParse(&args)
 	if args.Service == nil {
 		log.Fatal("You must enter a service")
 	}
+	var config NbSysRcMeta
 
-	fmt.Printf("Key value [%v]\n", args.Service)
+	_, err := toml.DecodeFile(".nbsysrc.toml", &config)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("/etc/rc.d is: %s\n", config.EctRcd)
+	fmt.Printf("Key value [%s]\n", args.Service)
 	fmt.Printf("Am I root? %v\n", isUserRoot())
 }
 
