@@ -24,11 +24,11 @@ func main() {
 	if args.Service == nil {
 		log.Fatal("You must enter a service")
 	}
-	var config NbSysRcMeta
 
+	var config NbSysRcMeta
 	_, err := toml.DecodeFile(".nbsysrc.toml", &config)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	fmt.Printf("/etc/rc.d is: %s\n", config.EctRcd)
 	fmt.Printf("Key value [%s]\n", args.Service)
@@ -37,4 +37,13 @@ func main() {
 
 func isUserRoot() bool {
 	return os.Getuid() == 0
+}
+
+func readRcConf(file_name string) (Content string, err error) {
+	readFile, err := os.Open(file_name)
+	if err != nil {
+		return "", err
+	}
+	defer readFile.Close()
+
 }
