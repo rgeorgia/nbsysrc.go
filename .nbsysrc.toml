@@ -1,3 +1,4 @@
-ect_rcd = "/home/rgeorgia/workspace/go_projects/nbsysrc.go/etc"
+etc = "/home/rgeorgia/workspace/go_projects/nbsysrc.go/etc"
+ect_rcd = "/home/rgeorgia/workspace/go_projects/nbsysrc.go/etc/rc.d"
 example_rcd = "/home/rgeorgia/workspace/go_projects/nbsysrc.go/usr/pkg/share/examples/rc.d"
-rc_conf = ""
+rc_conf = "rc.conf"

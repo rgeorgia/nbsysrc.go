@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	DefaultEtcPath    = "/etc/"
-	DefaultRcConfFile = "rc.conf"
-	DefaultRcD        = "/etc/rc.d/"
-	DefaultExampleRcD = "/usr/pkg/share/example/rc.d"
+	DEFAULTETCPATH    = "/etc/"
+	DEFAULTRCCONFFILE = "rc.conf"
+	DEFAULTRCD        = "/etc/rc.d/"
+	DEFAULTECAMPLERCD = "/usr/pkg/share/example/rc.d"
 )
 
 // ReadRcConfigFile reads a file and returns the content.
@@ -18,17 +18,17 @@ const (
 func ReadRcConfigFile(filename string) ([]string, error) {
 	var fileLines []string
 
-	rcFileContent, err := os.Open(filename)
+	readFile, err := os.Open(filename)
 	if err != nil {
 		return fileLines, err
 	}
-	fileScanner := bufio.NewScanner(rcFileContent)
+	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
 
 	for fileScanner.Scan() {
 		fileLines = append(fileLines, fileScanner.Text())
 	}
-	err = rcFileContent.Close()
+	err = readFile.Close()
 	if err != nil {
 		return nil, err
 	}
