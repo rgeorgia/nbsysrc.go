@@ -39,11 +39,11 @@ func isUserRoot() bool {
 	return os.Getuid() == 0
 }
 
-func readRcConf(file_name string) (Content string, err error) {
-	readFile, err := os.Open(file_name)
-	if err != nil {
-		return "", err
-	}
-	defer readFile.Close()
-
-}
+//func readRcConf(file_name string) (Content string, err error) {
+//	readFile, err := os.Open(file_name)
+//	if err != nil {
+//		return "", err
+//	}
+//	defer readFile.Close()
+//
+//}
