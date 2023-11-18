@@ -33,17 +33,10 @@ func main() {
 	fmt.Printf("/etc/rc.d is: %s\n", config.EctRcd)
 	fmt.Printf("Key value [%s]\n", args.Service)
 	fmt.Printf("Am I root? %v\n", isUserRoot())
+
+	//rcContent, err := ReadRcConfigFile()
 }
 
 func isUserRoot() bool {
 	return os.Getuid() == 0
 }
-
-//func readRcConf(file_name string) (Content string, err error) {
-//	readFile, err := os.Open(file_name)
-//	if err != nil {
-//		return "", err
-//	}
-//	defer readFile.Close()
-//
-//}
