@@ -58,7 +58,8 @@ func main() {
 }
 
 func validInput(arg string) bool {
-	validValues := []string{"NO", "YES"}
+	// "YES" | "NO" | "TRUE" | "FALSE" | "ON" | "OFF" | "0" | "1"
+	validValues := []string{"NO", "YES", "TRUE", "FALSE", "ON", "OFF", "0", "1"}
 	if len(strings.Split(arg, "=")) != 2 {
 		return false
 	}
